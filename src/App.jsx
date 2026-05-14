@@ -2,8 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Beef,
-  UserRound,
-  Users,
   Plus,
   Search,
   ClipboardList,
@@ -201,8 +199,8 @@ function SelectField({ label, value, onChange, options }) {
 
 function StatCard({ icon: Icon, title, value, subtitle }) {
   return (
-    <Card className="rounded-3xl border-0 shadow-sm">
-      <CardContent className="flex items-center gap-4 p-5">
+    <Card className="rounded-3xl border-0 bg-white shadow-sm">
+      <CardContent className="flex items-center gap-4 p-6">
         <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-700">
           <Icon size={24} />
         </div>
@@ -305,23 +303,16 @@ function Shell({ children, user, currentPage, setCurrentPage, onLogout }) {
         </div>
       )}
 
-      <main className="p-4 lg:ml-72 lg:p-8">{children}</main>
+      <main className="p-6 lg:ml-72 lg:p-10">{children}</main>
     </div>
   );
 }
 
 function LoginScreen({ onLogin, onRegister, users }) {
   const [role, setRole] = useState("Dueño");
-  const [email, setEmail] = useState("dueno@rancho.com");
-  const [password, setPassword] = useState("1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const selectRole = (selectedRole) => {
-    setRole(selectedRole);
-    setEmail(selectedRole === "Dueño" ? "dueno@rancho.com" : "empleado@rancho.com");
-    setPassword("1234");
-    setError("");
-  };
 
   const submit = () => {
     const normalizedEmail = email.trim().toLowerCase();
@@ -339,54 +330,48 @@ function LoginScreen({ onLogin, onRegister, users }) {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-slate-100 p-4">
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl">
-        <div className="grid overflow-hidden rounded-[2rem] bg-white shadow-xl lg:grid-cols-2">
-          <div className="flex flex-col justify-between bg-emerald-700 p-8 text-white">
+    <div
+      className="flex min-h-screen items-center justify-center p-6"
+      style={{ background: "linear-gradient(135deg, #085C42 0%, #139D6D 100%)" }}
+    >
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl">
+        <div className="grid overflow-hidden rounded-[2rem] bg-white shadow-2xl lg:grid-cols-2">
+          <div
+            className="flex flex-col justify-between p-10 text-white"
+            style={{ background: "linear-gradient(160deg, #085C42 0%, #139D6D 100%)" }}
+          >
             <div>
               <div className="mb-8 inline-flex rounded-3xl bg-white/15 p-4">
                 <Beef size={44} />
               </div>
               <h1 className="text-4xl font-bold leading-tight">Sistema web para registro ganadero</h1>
-              <p className="mt-4 text-emerald-50">
+              <p className="mt-5 text-emerald-100 leading-relaxed">
                 Administra animales, empleados, tareas y membresías desde cualquier navegador, sin instalar una app móvil.
               </p>
             </div>
-            <p className="mt-8 text-sm text-emerald-100">Demo: dueno@rancho.com / 1234 o empleado@rancho.com / 1234</p>
+            <div className="mt-10 rounded-2xl bg-white/10 p-5">
+              <p className="text-sm font-semibold text-white">Bienvenido a BoviTrack</p>
+              <p className="mt-1 text-xs text-emerald-100">Inicia sesión para administrar tu rancho ganadero.</p>
+            </div>
           </div>
 
-          <div className="p-8">
-            <h2 className="text-2xl font-bold">Identifícate</h2>
-            <p className="mt-1 text-sm text-slate-500">Selecciona el tipo de usuario para ingresar.</p>
+          <div className="flex flex-col justify-center p-10">
+            <h2 className="text-2xl font-bold text-slate-800">Iniciar sesión</h2>
+            <p className="mt-2 text-sm text-slate-500">Ingresa tus credenciales para acceder al sistema.</p>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              {["Dueño", "Empleado"].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => selectRole(item)}
-                  className={`rounded-2xl border p-4 text-left transition ${
-                    role === item ? "border-emerald-600 bg-emerald-50 text-emerald-800" : "border-slate-200 hover:bg-slate-50"
-                  }`}
-                >
-                  {item === "Dueño" ? <UserRound /> : <Users />}
-                  <p className="mt-2 font-semibold">{item}</p>
-                </button>
-              ))}
+            <div className="mt-8 space-y-5">
+              <SelectField label="Tipo de usuario" value={role} onChange={setRole} options={["Dueño", "Empleado"]} />
+              <Field label="Correo electrónico" value={email} onChange={setEmail} placeholder="correo@ejemplo.com" />
+              <Field label="Contraseña" type="password" value={password} onChange={setPassword} placeholder="••••••••" />
             </div>
 
-            <div className="mt-6 space-y-4">
-              <Field label="Correo" value={email} onChange={setEmail} />
-              <Field label="Contraseña" type="password" value={password} onChange={setPassword} />
-            </div>
+            {error && <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">{error}</p>}
 
-            {error && <p className="mt-4 rounded-2xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-
-            <Button onClick={submit} className="mt-6 w-full rounded-2xl bg-emerald-600 py-6 text-base hover:bg-emerald-700">
+            <Button onClick={submit} className="mt-7 w-full rounded-2xl bg-emerald-600 py-6 text-base hover:bg-emerald-700">
               Ingresar
             </Button>
-            <Button onClick={onRegister} variant="ghost" className="mt-2 w-full rounded-2xl">
-              No tengo cuenta
+            <Button onClick={onRegister} variant="ghost" className="mt-3 w-full rounded-2xl text-slate-600 hover:text-slate-800">
+              ¿No tienes cuenta? Regístrate
             </Button>
           </div>
         </div>
@@ -460,11 +445,14 @@ function RegisterScreen({ onBack, onCreateUser, users }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4">
-      <div className="mx-auto max-w-3xl rounded-[2rem] bg-white p-6 shadow-sm">
-        <h1 className="text-3xl font-bold">Registro nuevo usuario</h1>
-        <p className="mt-1 text-slate-500">Crea una cuenta para dueño o empleado.</p>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
+    <div
+      className="min-h-screen p-6 flex items-start justify-center"
+      style={{ background: "linear-gradient(135deg, #085C42 0%, #139D6D 100%)" }}
+    >
+      <div className="mx-auto w-full max-w-3xl rounded-[2rem] bg-white p-8 shadow-2xl mt-8 mb-8">
+        <h1 className="text-3xl font-bold text-slate-800">Registro nuevo usuario</h1>
+        <p className="mt-2 text-slate-500">Crea una cuenta para dueño o empleado.</p>
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
           <Field label="Nombres" value={form.names} onChange={(value) => update("names", value)} />
           <Field label="Apellidos" value={form.lastNames} onChange={(value) => update("lastNames", value)} />
           <Field label="Número telefónico" value={form.phone} onChange={(value) => update("phone", value)} />
@@ -484,11 +472,11 @@ function RegisterScreen({ onBack, onCreateUser, users }) {
             {message}
           </p>
         )}
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Button onClick={submit} className="rounded-2xl bg-emerald-600 hover:bg-emerald-700">
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <Button onClick={submit} className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 px-8 py-3">
             Crear cuenta
           </Button>
-          <Button onClick={onBack} variant="outline" className="rounded-2xl">
+          <Button onClick={onBack} variant="outline" className="rounded-2xl px-8 py-3">
             Regresar
           </Button>
         </div>
@@ -505,19 +493,19 @@ function Dashboard({ animals, tasks, user }) {
     <div>
       <h1 className="text-3xl font-bold">Hola, {user.name}</h1>
       <p className="mt-1 text-slate-500">Resumen general del rancho.</p>
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <div className="mt-6 grid gap-5 md:grid-cols-3">
         <StatCard icon={Beef} title="Animales registrados" value={animals.length} subtitle="Base local de ejemplo" />
         <StatCard icon={CheckCircle2} title="Animales sanos" value={healthy} subtitle="Sin alertas actuales" />
         <StatCard icon={ClipboardList} title="Tareas pendientes" value={pending} subtitle="Asignadas al equipo" />
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <Card className="rounded-3xl border-0 shadow-sm">
-          <CardContent className="p-5">
+      <div className="mt-6 grid gap-5 lg:grid-cols-2">
+        <Card className="rounded-3xl border-0 bg-white shadow-sm">
+          <CardContent className="p-6">
             <h2 className="text-xl font-bold">Últimos animales</h2>
             <div className="mt-4 space-y-3">
               {animals.slice(0, 3).map((animal) => (
-                <div key={animal.id} className="flex items-center justify-between rounded-2xl bg-slate-50 p-4">
+                <div key={animal.id} className="flex items-center justify-between rounded-2xl bg-slate-50 px-5 py-4">
                   <div>
                     <p className="font-semibold">{animal.name}</p>
                     <p className="text-sm text-slate-500">
@@ -537,14 +525,14 @@ function Dashboard({ animals, tasks, user }) {
           </CardContent>
         </Card>
 
-        <Card className="rounded-3xl border-0 shadow-sm">
-          <CardContent className="p-5">
+        <Card className="rounded-3xl border-0 bg-white shadow-sm">
+          <CardContent className="p-6">
             <h2 className="text-xl font-bold">Próximas tareas</h2>
             <div className="mt-4 space-y-3">
               {tasks.map((task) => (
-                <div key={task.id} className="rounded-2xl bg-slate-50 p-4">
+                <div key={task.id} className="rounded-2xl bg-slate-50 px-5 py-4">
                   <p className="font-semibold">{task.title}</p>
-                  <p className="text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-slate-500">
                     {task.employee} · {task.dueDate}
                   </p>
                 </div>
@@ -587,8 +575,8 @@ function AnimalForm({ onSave, editing, onCancel }) {
   };
 
   return (
-    <Card className="rounded-3xl border-0 shadow-sm">
-      <CardContent className="p-5">
+    <Card className="rounded-3xl border-0 bg-white shadow-sm">
+      <CardContent className="p-6">
         <h2 className="text-xl font-bold">{editing ? "Editar animal" : "Registrar animal"}</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <Field label="Arete / Identificador" value={form.tag} onChange={(value) => update("tag", value)} />
@@ -699,9 +687,9 @@ function AnimalsPage({ animals, setAnimals }) {
         </div>
       )}
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_380px]">
-        <Card className="rounded-3xl border-0 shadow-sm">
-          <CardContent className="p-5">
+      <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_380px]">
+        <Card className="rounded-3xl border-0 bg-white shadow-sm">
+          <CardContent className="p-6">
             <div className="relative mb-4">
               <Search className="absolute left-4 top-3.5 text-slate-400" size={18} />
               <input
@@ -773,8 +761,8 @@ function AnimalsPage({ animals, setAnimals }) {
           </CardContent>
         </Card>
 
-        <Card className="rounded-3xl border-0 shadow-sm">
-          <CardContent className="p-5">
+        <Card className="rounded-3xl border-0 bg-white shadow-sm">
+          <CardContent className="p-6">
             {selected ? (
               <div>
                 <div className="mb-4 flex items-center justify-between">
@@ -857,10 +845,10 @@ function TasksPage({ tasks, setTasks, user }) {
       <p className="mt-1 text-slate-500">Asignación y seguimiento de actividades.</p>
 
       {user.role === "Dueño" && (
-        <Card className="mt-6 rounded-3xl border-0 shadow-sm">
-          <CardContent className="p-5">
+        <Card className="mt-6 rounded-3xl border-0 bg-white shadow-sm">
+          <CardContent className="p-6">
             <h2 className="text-xl font-bold">Nueva tarea</h2>
-            <div className="mt-4 grid gap-4 md:grid-cols-3">
+            <div className="mt-5 grid gap-5 md:grid-cols-3">
               <Field label="Descripción" value={title} onChange={setTitle} />
               <Field label="Empleado" value={employee} onChange={setEmployee} />
               <Field label="Fecha límite" type="date" value={dueDate} onChange={setDueDate} />
@@ -873,10 +861,10 @@ function TasksPage({ tasks, setTasks, user }) {
         </Card>
       )}
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {visibleTasks.map((task) => (
-          <Card key={task.id} className="rounded-3xl border-0 shadow-sm">
-            <CardContent className="p-5">
+          <Card key={task.id} className="rounded-3xl border-0 bg-white shadow-sm">
+            <CardContent className="p-6">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h3 className="font-bold">{task.title}</h3>
@@ -894,8 +882,8 @@ function TasksPage({ tasks, setTasks, user }) {
           </Card>
         ))}
         {visibleTasks.length === 0 && (
-          <Card className="rounded-3xl border-0 shadow-sm md:col-span-2 xl:col-span-3">
-            <CardContent className="flex min-h-40 items-center justify-center p-5 text-center text-slate-500">
+          <Card className="rounded-3xl border-0 bg-white shadow-sm md:col-span-2 xl:col-span-3">
+            <CardContent className="flex min-h-40 items-center justify-center p-6 text-center text-slate-500">
               No hay tareas registradas.
             </CardContent>
           </Card>
@@ -931,10 +919,10 @@ function MembershipPage() {
     <div>
       <h1 className="text-3xl font-bold">Membresía</h1>
       <p className="mt-1 text-slate-500">Planes de ejemplo para monetizar la plataforma.</p>
-      <div className="mt-6 grid gap-4 lg:grid-cols-3">
+      <div className="mt-6 grid gap-5 lg:grid-cols-3">
         {plans.map((plan, index) => (
-          <Card key={plan.title} className={`rounded-3xl border-0 shadow-sm ${index === 1 ? "ring-2 ring-emerald-500" : ""}`}>
-            <CardContent className="p-6">
+          <Card key={plan.title} className={`rounded-3xl border-0 bg-white shadow-sm ${index === 1 ? "ring-2 ring-emerald-500" : ""}`}>
+            <CardContent className="p-7">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">{plan.title}</h2>
                 {index === 1 && <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs text-emerald-700">Recomendado</span>}
